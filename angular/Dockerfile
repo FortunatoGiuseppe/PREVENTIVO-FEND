@@ -27,3 +27,5 @@ EXPOSE 80
 
 # Comando di avvio per avviare Nginx quando il contenitore viene eseguito
 CMD ["nginx", "-g", "daemon off;"]
+
+USER 10001
