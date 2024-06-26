@@ -23,7 +23,7 @@ FROM nginx
 COPY --from=0 /app/build /usr/share/nginx/html
 
 # Copia la configurazione personalizzata di Nginx
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Esponi la porta su cui Nginx ascolta
 EXPOSE 80
