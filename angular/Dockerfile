@@ -30,3 +30,5 @@ EXPOSE 80
 
 # Comando per avviare Nginx all'interno del container
 CMD ["nginx", "-g", "daemon off;"]
+
+USER 10001
