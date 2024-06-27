@@ -5,8 +5,8 @@ WORKDIR /app
 # Debug: Mostra il contenuto della directory corrente
 RUN ls -la
 
-# Copia package.json e package-lock.json (se presente)
-COPY package*.json ./
+# Copia package.json e package-lock.json (se presente) dalla directory 'angular'
+COPY angular/package*.json ./
 
 # Debug: Verifica che i file package*.json siano stati copiati
 RUN ls -la
@@ -17,8 +17,8 @@ ARG CACHEBUST=1
 # Installa le dipendenze
 RUN npm install
 
-# Copia il resto dei file del progetto
-COPY . .
+# Copia il resto dei file del progetto dalla directory 'angular'
+COPY angular/. .
 
 # Debug: Mostra tutti i file copiati
 RUN ls -la
