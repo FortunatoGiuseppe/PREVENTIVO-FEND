@@ -11,6 +11,9 @@ COPY package*.json ./
 # Debug: Verifica che i file package*.json siano stati copiati
 RUN ls -la
 
+# Usa un argomento di build per invalidare la cache
+ARG CACHEBUST=1
+
 # Installa le dipendenze
 RUN npm install
 
