@@ -35,7 +35,7 @@ FROM nginx:alpine
 # Remove default Nginx configuration
 RUN rm -rf /etc/nginx/conf.d/*
 
-# Copy built Angular files
+# Copy built Angular files to Nginx html directory
 COPY --from=build /app/dist/angular /usr/share/nginx/html
 
 # Copy Nginx configuration
@@ -45,7 +45,12 @@ COPY nginx.conf /etc/nginx/nginx.conf
 RUN mkdir -p /var/cache/nginx/client_temp \
     && chmod 777 /var/cache/nginx/client_temp
 
+# Adjust permissions if necessary
+RUN chmod -R 777 /var/cache/nginx
+
+# Expose port 80
 EXPOSE 80
 
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
 USER 10001
