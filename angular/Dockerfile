@@ -29,23 +29,17 @@ RUN npm run build
 # Debug: Verifica il contenuto della directory dist
 RUN ls -la dist
 
-# Stage 2: Serve il frontend con Nginx
+# Stage 2: Serve the frontend with Nginx
 FROM nginx:alpine
 
-# Rimuovi la configurazione predefinita di Nginx
+# Remove default Nginx configuration
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copia i file buildate da Angular
+# Copy built Angular files
 COPY --from=build /app/dist/angular /usr/share/nginx/html
 
-# Copia il file di configurazione di Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Debug: Verifica il contenuto della directory di Nginx
-RUN ls -la /usr/share/nginx/html
-
-# Debug: Mostra il contenuto del file di configurazione di Nginx
-RUN cat /etc/nginx/conf.d/default.conf
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
