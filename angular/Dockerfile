@@ -33,13 +33,17 @@ RUN ls -la dist
 FROM nginx:alpine
 
 # Remove default Nginx configuration
-RUN rm -rf /usr/share/nginx/html/*
+RUN rm -rf /etc/nginx/conf.d/*
 
 # Copy built Angular files
 COPY --from=build /app/dist/angular /usr/share/nginx/html
 
 # Copy Nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
+
+# Ensure necessary directories are writable
+RUN mkdir -p /var/cache/nginx/client_temp \
+    && chmod 777 /var/cache/nginx/client_temp
 
 EXPOSE 80
 
