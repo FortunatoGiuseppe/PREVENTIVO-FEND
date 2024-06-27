@@ -1,56 +1,30 @@
-# Stage 1: Build dell'applicazione Angular
+# Use an official Node.js runtime as the base image
 FROM node:18 AS build
+
+# Set the working directory in the container
 WORKDIR /app
 
-# Debug: Mostra il contenuto della directory corrente
-RUN ls -la
+# Copy the package.json and package-lock.json to the container
+COPY package*.json ./
 
-# Copia package.json e package-lock.json (se presente) dalla directory 'angular'
-COPY angular/package*.json ./
-
-# Debug: Verifica che i file package*.json siano stati copiati
-RUN ls -la
-
-# Usa un argomento di build per invalidare la cache
-ARG CACHEBUST=1
-
-# Installa le dipendenze
+# Install the application dependencies
 RUN npm install
 
-# Copia il resto dei file del progetto dalla directory 'angular'
-COPY angular/. .
+# Copy the entire Angular app source code to the container
+COPY . .
 
-# Debug: Mostra tutti i file copiati
-RUN ls -la
+# Build the Angular application for production
+RUN npm run build 
 
-# Esegui il build
-RUN npm run build
-
-# Debug: Verifica il contenuto della directory dist
-RUN ls -la dist
-
-# Stage 2: Serve the frontend with Nginx
+# Use a lightweight Nginx image as the final image
 FROM nginx:alpine
 
-# Remove default Nginx configuration
-RUN rm -rf /etc/nginx/conf.d/*
+# Copy the built Angular app from the previous stage to the Nginx web server directory
+COPY --from=build /app/dist/angular-spa /usr/share/nginx/html
+COPY nginx/default.conf /etc/nginx/conf.d/
 
-# Copy built Angular files to Nginx html directory
-COPY --from=build /app/dist/angular /usr/share/nginx/html
-
-# Copy Nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Ensure necessary directories are writable
-RUN mkdir -p /var/cache/nginx/client_temp \
-    && chmod 777 /var/cache/nginx/client_temp
-
-# Adjust permissions if necessary
-RUN chmod -R 777 /var/cache/nginx
-
-# Expose port 80
+# Expose port 80 for serving the web application
 EXPOSE 80
 
-# Start Nginx
+# Start the Nginx web server when the container runs
 CMD ["nginx", "-g", "daemon off;"]
-USER 10001
