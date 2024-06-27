@@ -9,6 +9,7 @@ RUN npm run build
 # Stage 2: Serve il frontend con Nginx
 FROM nginx
 COPY --from=build /app/dist/angular /usr/share/nginx/html
+RUN ls -la
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
